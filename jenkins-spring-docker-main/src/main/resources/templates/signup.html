@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en"
+      th:replace="~{base::layout(~{::section})}">
+
+<head>
+<meta charset="UTF-8">
+<title>Join Hidden Leaf</title>
+</head>
+
+
+<body>
+
+<section>
+
+<style>
+
+.signup-container{
+
+min-height:90vh;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:
+
+linear-gradient(
+135deg,
+rgba(0,0,0,.85),
+rgba(0,70,40,.85)
+),
+
+url("https://wallpapercave.com/wp/wp4923989.jpg");
+
+background-size:cover;
+
+background-position:center;
+
+padding:40px;
+
+}
+
+
+/* animation particles */
+
+.fire{
+
+position:absolute;
+
+width:25px;
+height:25px;
+
+background:#ff9800;
+
+border-radius:50%;
+
+box-shadow:
+0 0 20px orange;
+
+animation:
+move 6s infinite;
+
+}
+
+
+.fire1{
+
+left:10%;
+top:20%;
+
+}
+
+.fire2{
+
+right:15%;
+top:40%;
+
+animation-delay:2s;
+
+}
+
+
+@keyframes move{
+
+0%{
+transform:translateY(0);
+opacity:.3;
+}
+
+
+50%{
+transform:translateY(-120px);
+opacity:1;
+}
+
+
+100%{
+transform:translateY(0);
+opacity:.3;
+}
+
+}
+
+
+
+
+.signup-card{
+
+
+width:750px;
+
+
+background:
+
+rgba(0,0,0,.75);
+
+
+border-radius:25px;
+
+
+padding:35px;
+
+
+border:
+
+1px solid orange;
+
+
+box-shadow:
+
+0 0 35px rgba(255,120,0,.7);
+
+
+animation:
+
+show 1s ease;
+
+
+}
+
+
+
+@keyframes show{
+
+from{
+
+opacity:0;
+
+transform:translateY(60px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+
+
+
+.logo{
+
+
+font-size:60px;
+
+text-align:center;
+
+
+animation:
+
+spin 8s linear infinite;
+
+
+}
+
+
+@keyframes spin{
+
+100%{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+
+
+.heading{
+
+
+text-align:center;
+
+color:#ffb300;
+
+font-size:38px;
+
+font-weight:bold;
+
+text-shadow:
+
+0 0 15px orange;
+
+
+}
+
+
+
+.sub-heading{
+
+text-align:center;
+
+color:white;
+
+margin-bottom:25px;
+
+}
+
+
+
+label{
+
+color:white;
+
+font-weight:600;
+
+}
+
+
+
+.ninja-input{
+
+
+background:#07120d!important;
+
+
+color:white!important;
+
+
+border:
+
+1px solid #ff9800!important;
+
+
+border-radius:15px;
+
+
+padding:12px;
+
+
+}
+
+
+
+.ninja-input:focus{
+
+
+box-shadow:
+
+0 0 20px orange!important;
+
+
+}
+
+
+
+.signup-btn{
+
+
+width:100%;
+
+
+border:none;
+
+
+padding:14px;
+
+
+border-radius:30px;
+
+
+background:
+
+linear-gradient(
+45deg,
+orange,
+red
+);
+
+
+color:white;
+
+
+font-size:18px;
+
+
+font-weight:bold;
+
+
+transition:.3s;
+
+
+}
+
+
+
+.signup-btn:hover{
+
+
+transform:scale(1.05);
+
+
+box-shadow:
+
+0 0 25px orange;
+
+
+}
+
+
+
+</style>
+
+
+
+<div class="signup-container">
+
+
+<div class="fire fire1"></div>
+<div class="fire fire2"></div>
+
+
+
+<div class="signup-card">
+
+
+<div class="logo">
+
+🍃
+
+</div>
+
+
+<h1 class="heading">
+
+Join The Hidden Leaf
+
+</h1>
+
+
+<p class="sub-heading">
+
+Create your shinobi identity and carry the Will of Fire
+
+</p>
+
+
+
+
+<form th:action="@{/signup}"
+      method="post"
+      th:object="${user}">
+
+
+<div class="row">
+
+
+<div class="col-md-6 mb-3">
+
+<label>
+Shinobi Name
+</label>
+
+<input class="form-control ninja-input"
+       type="text"
+       id="userName"
+       th:field="*{userName}"
+       placeholder="Enter username"
+       required>
+
+</div>
+
+
+
+<div class="col-md-6 mb-3">
+
+<label>
+Village Email
+</label>
+
+<input class="form-control ninja-input"
+       type="email"
+       id="emailId"
+       th:field="*{emailId}"
+       placeholder="Enter email"
+       required>
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="mb-3">
+
+<label>
+Clan Identity
+</label>
+
+
+<select class="form-control ninja-input"
+        id="gender"
+        th:field="*{gender}"
+        required>
+
+
+<option value="">
+Select Identity
+</option>
+
+
+<option value="male">
+Male Shinobi
+</option>
+
+
+<option value="female">
+Female Shinobi
+</option>
+
+
+<option value="other">
+Other Clan
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+<div class="row">
+
+
+<div class="col-md-6 mb-3">
+
+
+<label>
+Communication Scroll
+</label>
+
+
+<input class="form-control ninja-input"
+       type="number"
+       id="phoneNumber"
+       th:field="*{phoneNumber}"
+       placeholder="Phone number"
+       required>
+
+
+</div>
+
+
+
+
+<div class="col-md-6 mb-3">
+
+
+<label>
+Secret Jutsu Password
+</label>
+
+
+<input class="form-control ninja-input"
+       type="password"
+       id="password"
+       th:field="*{password}"
+       placeholder="Create password"
+       required>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<button type="submit"
+        class="signup-btn">
+
+
+🔥 Become A Shinobi
+
+
+</button>
+
+
+
+</form>
+
+
+
+
+
+<div class="text-center text-white mt-4">
+
+
+Already have a clan?
+
+
+<a href="/login"
+style="color:#ff9800">
+
+
+Enter Village
+
+
+</a>
+
+
+</div>
+
+
+
+<div th:if="${error}"
+     class="text-danger text-center mt-3"
+     th:text="${error}">
+</div>
+
+
+<div th:if="${success}"
+     class="text-success text-center mt-3"
+     th:text="${success}">
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+</body>
+
+</html>

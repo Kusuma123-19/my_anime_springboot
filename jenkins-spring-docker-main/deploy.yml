@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: Namespace
+
+metadata:
+  name: prod
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: spring-app
+  namespace: prod
+
+
+spec:
+
+  replicas: 2
+
+
+  selector:
+
+    matchLabels:
+      app: web
+
+
+  template:
+
+    metadata:
+
+      labels:
+        app: web
+
+
+    spec:
+
+      containers:
+
+      - name: spring-app
+
+        image: mardan112/jenkinsimage:latest
+
+        imagePullPolicy: Always
+
+
+        ports:
+
+        - containerPort: 8085
+          name: http
+
+
+        env:
+
+
+        - name: DB_URL
+          value: jdbc:mysql://mysql:3306/mydatabase
+
+
+        - name: DB_USER
+          value: root
+
+
+        - name: DB_PASSWORD
+
+          valueFrom:
+
+            secretKeyRef:
+
+              name: mysql-secret
+
+              key: MYSQL_ROOT_PASSWORD
+
+
+
+        readinessProbe:
+
+          httpGet:
+
+            path: /actuator/health
+
+            port: 8085
+
+
+          initialDelaySeconds: 40
+
+          periodSeconds: 10
+
+
+
+        livenessProbe:
+
+          httpGet:
+
+            path: /actuator/health
+
+            port: 8085
+
+
+          initialDelaySeconds: 60
+
+          periodSeconds: 20
+
+
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+
+  name: spring-service
+
+  namespace: prod
+
+
+spec:
+
+  type: ClusterIP
+
+
+  selector:
+
+    app: web
+
+
+  ports:
+
+  - port: 80
+
+    targetPort: 8085
+
+    

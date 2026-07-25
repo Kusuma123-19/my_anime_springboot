@@ -1,0 +1,185 @@
+pipeline {
+
+
+    agent any
+
+
+
+    parameters {
+
+
+        choice(
+
+            name:'ACTION',
+
+            choices:[
+
+                'Deploy Database',
+
+                'Deploy App',
+
+                'Remove App',
+
+                'Remove Database'
+
+            ],
+
+            description:'Kubernetes Action'
+
+        )
+
+    }
+
+
+
+    environment {
+
+
+        MYSQL_PASSWORD="root123"
+
+        MYSQL_DATABASE="mydatabase"
+
+
+    }
+
+
+
+    stages {
+
+
+        stage('Execute') {
+
+
+            steps {
+
+
+                script {
+
+
+
+                    if(params.ACTION == 'Deploy Database') {
+
+
+                        sh '''
+
+                        kubectl create namespace prod \
+                        --dry-run=client -o yaml | kubectl apply -f -
+
+
+
+                        kubectl delete secret mysql-secret \
+                        -n prod \
+                        --ignore-not-found=true
+
+
+
+                        kubectl create secret generic mysql-secret \
+                        -n prod \
+                        --from-literal=MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD} \
+                        --from-literal=MYSQL_DATABASE=${MYSQL_DATABASE}
+
+
+
+                        kubectl apply -f datasrc.yml
+
+
+
+                        kubectl rollout status \
+                        statefulset/mysql \
+                        -n prod \
+                        --timeout=300s
+
+
+                        '''
+
+                    }
+
+
+
+
+                    else if(params.ACTION == 'Deploy App') {
+
+
+                        sh '''
+
+                        kubectl apply -f deploy.yml
+
+
+
+                        kubectl rollout status \
+                        deployment/spring-app \
+                        -n prod \
+                        --timeout=300s
+
+
+                        '''
+
+                    }
+
+
+
+
+                    else if(params.ACTION == 'Remove App') {
+
+
+                        sh '''
+
+                        kubectl delete -f deploy.yml \
+                        --ignore-not-found=true
+
+                        '''
+
+                    }
+
+
+
+
+
+                    else if(params.ACTION == 'Remove Database') {
+
+
+                        sh '''
+
+                        kubectl delete -f datasrc.yml \
+                        --ignore-not-found=true
+
+
+
+                        kubectl delete secret mysql-secret \
+                        -n prod \
+                        --ignore-not-found=true
+
+                        '''
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+
+    post {
+
+
+        always {
+
+
+            sh '''
+
+            kubectl get pods -n prod || true
+
+            kubectl get svc -n prod || true
+
+
+            '''
+
+        }
+
+    }
+
+}
