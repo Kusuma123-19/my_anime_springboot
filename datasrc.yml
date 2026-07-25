@@ -20,10 +20,10 @@ spec:
 
   persistentVolumeReclaimPolicy: Retain
 
-
   hostPath:
 
     path: /data/mysql
+    type: DirectoryOrCreate
 
 
 
