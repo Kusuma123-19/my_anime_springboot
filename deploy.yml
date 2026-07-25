@@ -56,9 +56,10 @@ metadata:
   name: spring-service
   namespace: prod
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: web
   ports:
   - port: 80
     targetPort: 8085
+    nodePort: 30081
